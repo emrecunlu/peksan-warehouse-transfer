@@ -37,7 +37,7 @@ function createWindow() {
 
       await new Promise((resolve) => setTimeout(() => resolve(true), 500))
 
-      printWindow.webContents.printToPDF({}).then((buffer) => {})
+      printWindow.webContents.print({})
     })
   })
 

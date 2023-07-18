@@ -81,6 +81,23 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0;
+  }
+
+  @page {
+    size: 10cm 15cm;
+    margin: 0;
+  }
+}
+
 .label-wrapper {
   width: 15cm;
   height: 10cm;
@@ -88,13 +105,14 @@ onBeforeUnmount(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-90deg);
-  border: 1px solid #000;
+  padding: 6px;
 }
 .label-container {
   width: 10cm;
   height: 15cm;
   position: relative;
-  border: 1px solid #000;
+  page-break-after: always;
+  overflow: hidden;
 }
 
 .info-container {
