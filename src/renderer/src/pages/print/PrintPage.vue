@@ -88,12 +88,13 @@ onBeforeUnmount(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-90deg);
-  padding: 16px;
+  border: 1px solid #000;
 }
 .label-container {
   width: 10cm;
   height: 15cm;
   position: relative;
+  border: 1px solid #000;
 }
 
 .info-container {
@@ -193,16 +194,5 @@ th:nth-child(5) {
 td:nth-child(5) {
   text-align: right;
   width: 10%;
-}
-
-@media print {
-  @page {
-    margin: 0;
-    size: 10cm 15cm;
-  }
-  html,
-  body {
-    margin: 0;
-  }
 }
 </style>

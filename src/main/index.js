@@ -32,21 +32,12 @@ function createWindow() {
     printWindow.show()
     mainWindow.maximize()
 
-    ipcMain.on('print-label', (e, data) => {
+    ipcMain.on('print-label', async (e, data) => {
       printWindow.webContents.send('print-label', data)
 
-      setTimeout(() => {
-        printWindow.webContents.print(
-          {
-            printBackground: true,
-            silent: true,
-            deviceName: 'TSC TE210'
-          },
-          (success, failReason) => {
-            console.log(success, failReason)
-          }
-        )
-      }, 1000)
+      await new Promise((resolve) => setTimeout(() => resolve(true), 500))
+
+      printWindow.webContents.printToPDF({}).then((buffer) => {})
     })
   })
 
