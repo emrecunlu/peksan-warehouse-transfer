@@ -29,6 +29,10 @@ const routes = [
         component: () => import('../pages/auth/hygiene/HygienePage.vue')
       }
     ]
+  },
+  {
+    path: '/print',
+    component: () => import('../pages/print/PrintPage.vue')
   }
 ]
 
@@ -39,8 +43,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isLoggedIn = computed(() => store.getters['auth/_employee'])
-
-  console.log(isLoggedIn)
 
   if (to.meta?.auth && !isLoggedIn.value) {
     next('/auth/login')

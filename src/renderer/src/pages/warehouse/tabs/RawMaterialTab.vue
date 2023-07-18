@@ -2,16 +2,11 @@
 import TransferForm from '@/components/Dat/TransferForm.vue'
 import MaterialList from '@/components/Dat/MaterialList.vue'
 import CardTitle from '@/components/Dat/CardTitle.vue'
-import { reactive } from 'vue'
-import { provide } from 'vue'
-import { computed } from 'vue'
 import Decimal from 'decimal.js'
 import rawMaterialService from '@/utils/services/rawMaterial'
 import store from '@/store'
 import useClock from '@/hooks/useClock'
-import { onBeforeUnmount } from 'vue'
-import { da } from 'date-fns/locale'
-import { toDate } from 'date-fns'
+import { onBeforeUnmount, reactive, computed, provide } from 'vue'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 
 const state = reactive({
@@ -64,15 +59,22 @@ const handleClick = () => {
   }
 
   state.isLoading = true
-  rawMaterialService.transfer(data).then((result) => {
-    state.barrel = null
-    state.machine = null
-    state.materials = null
-    state.tmp = null
-    state.isLoading = false
+  rawMaterialService
+    .transfer(data)
+    .then((result) => {
+      state.barrel = null
+      state.machine = null
+      state.materials = null
+      state.tmp = null
+      state.isLoading = false
+      state.workOrder = null
 
-    SnackbarHelper.showSuccess('Transfer başarılı.')
-  })
+      window.electron.ipcRenderer.send('print-label', result.data)
+      SnackbarHelper.showSuccess('Transfer başarılı')
+    })
+    .finally(() => {
+      state.isLoading = false
+    })
 }
 
 onBeforeUnmount(() => {
@@ -90,10 +92,11 @@ onBeforeUnmount(() => {
       <v-divider class="my-4"></v-divider>
       <material-list v-if="state.materials"></material-list>
     </v-card-text>
-    <v-card-actions class="d-flex justify-end">
+    <v-card-actions v-if="state.materials" class="d-flex justify-end">
       <v-btn
         :disabled="!isCompleted"
         color="indigo"
+        size="large"
         variant="elevated"
         prepend-icon="mdi-transfer"
         @click="handleClick"

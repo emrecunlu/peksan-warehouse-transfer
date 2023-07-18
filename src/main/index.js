@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -17,9 +17,40 @@ function createWindow() {
     }
   })
 
+  const printWindow = new BrowserWindow({
+    parent: mainWindow,
+    show: false,
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false
+    }
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    printWindow.show()
+    mainWindow.maximize()
+
+    ipcMain.on('print-label', (e, data) => {
+      printWindow.webContents.send('print-label', data)
+
+      setTimeout(() => {
+        printWindow.webContents.print(
+          {
+            printBackground: true,
+            silent: true,
+            deviceName: 'TSC TE210'
+          },
+          (success, failReason) => {
+            console.log(success, failReason)
+          }
+        )
+      }, 1000)
+    })
   })
+
+  printWindow.on('ready-to-show', () => {})
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -30,6 +61,7 @@ function createWindow() {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    printWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '#print')
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }

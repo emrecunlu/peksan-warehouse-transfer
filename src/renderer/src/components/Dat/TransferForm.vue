@@ -73,7 +73,7 @@ const handleClick = () => {
     <div class="field">
       <select-barrel-field></select-barrel-field>
     </div>
-    <div>
+    <div v-if="!state.isColor">
       <v-btn
         :disabled="!state.materials"
         variant="elevated"
