@@ -9,11 +9,13 @@ const store = new Store({
   cwd: app.getPath('userData'),
   defaults: {
     deviceName: 'TSC TE210',
-    apiUrl: 'http://192.168.2.251:6006',
+    apiUrl: 'http://192.168.2.251:6066',
     timeout: 500,
     silent: true
   }
 })
+
+console.log(app.getPath('exe'))
 
 function createWindow() {
   // Create the browser window.
@@ -21,7 +23,6 @@ function createWindow() {
     width: 900,
     height: 670,
     show: false,
-    autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -52,7 +53,7 @@ function createWindow() {
       await new Promise((resolve) => setTimeout(() => resolve(true), store.get('timeout')))
 
       printWindow.webContents.print(
-        { silent: store.get('silent'), deviceName: store.get('deviceName') },
+        { silent: store.get('silent'), deviceName: store.get('deviceName'), printBackground: true },
         (success, fail) => {
           console.log(success, fail)
         }

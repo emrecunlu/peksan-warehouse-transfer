@@ -2,7 +2,7 @@ import axios from 'axios'
 import SnackbarHelper from '../helpers/SnackbarHelper'
 
 const apiService = axios.create({
-  baseURL: 'http://192.168.2.251:534/api'
+  baseURL: ''
 })
 
 apiService.interceptors.request.use(
