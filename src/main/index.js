@@ -37,7 +37,9 @@ function createWindow() {
 
       await new Promise((resolve) => setTimeout(() => resolve(true), 500))
 
-      printWindow.webContents.print({})
+      printWindow.webContents.print({ silent: true, deviceName: 'TSC TE210' }, (success, fail) => {
+        console.log(success, fail)
+      })
     })
   })
 

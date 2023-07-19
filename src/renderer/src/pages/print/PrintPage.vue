@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import '../../assets/reset.css'
+import { format } from 'date-fns'
 
 const slip = ref(null)
 
@@ -38,11 +39,17 @@ onBeforeUnmount(() => {
         <div class="info-wrapper">
           <div class="label-info">
             <h1>Tarih</h1>
-            <span>18.07.2023 08:52</span>
+            <span>{{ format(new Date(slip.createdAt), 'yyyy.MM.dd HH:mm:ss') }}</span>
           </div>
           <div class="label-info">
             <h1>Personel</h1>
             <span>{{ slip.staff }}</span>
+          </div>
+        </div>
+        <div class="info-wrapper">
+          <div class="label-info">
+            <h1>Dat No</h1>
+            <span>{{ slip.datNo }}</span>
           </div>
         </div>
       </div>
@@ -105,7 +112,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-90deg);
-  padding: 6px;
+  padding: 14px;
 }
 .label-container {
   width: 10cm;
