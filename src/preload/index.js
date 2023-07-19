@@ -1,8 +1,14 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  get: async (key) => await ipcRenderer.invoke('_get', key),
+  set: async ({ key, value }) => ipcRenderer.invoke('_send', { key, value }),
+  update: async ({ key, value }) => ipcRenderer.invoke('_update', { key, value }),
+  delete: async (key) => await ipcRenderer.invoke('_delete', key),
+  sayHello: (name) => `Hello ${name}`
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

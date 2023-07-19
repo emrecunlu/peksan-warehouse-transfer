@@ -39,7 +39,7 @@ onBeforeUnmount(() => {
         <div class="info-wrapper">
           <div class="label-info">
             <h1>Tarih</h1>
-            <span>{{ format(new Date(slip.createdAt), 'yyyy.MM.dd HH:mm:ss') }}</span>
+            <span>{{ format(new Date(slip.createdAt), 'dd.MM.yyyy HH:mm') }}</span>
           </div>
           <div class="label-info">
             <h1>Personel</h1>

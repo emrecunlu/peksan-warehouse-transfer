@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import RawMaterialTab from '@/pages/warehouse/tabs/RawMaterialTab.vue'
 import ColorTab from '@/pages/warehouse/tabs/ColorTab.vue'
-import FractureTab from '@/pages/warehouse/tabs/FractureTab.vue'
 
 const tab = ref(0)
 
@@ -14,11 +13,11 @@ const tabs = [
   {
     title: 'Boya',
     tab: ColorTab
-  },
-  {
+  }
+  /*   {
     title: 'Kırma',
     tab: FractureTab
-  }
+  } */
 ]
 </script>
 

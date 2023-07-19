@@ -2,6 +2,18 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import Store from 'electron-store'
+
+const store = new Store({
+  name: 'config',
+  cwd: app.getPath('userData'),
+  defaults: {
+    deviceName: 'TSC TE210',
+    apiUrl: 'http://192.168.2.251:6006',
+    timeout: 500,
+    silent: true
+  }
+})
 
 function createWindow() {
   // Create the browser window.
@@ -29,17 +41,22 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    printWindow.show()
+    if (!store.get('silent')) {
+      printWindow.show()
+    }
     mainWindow.maximize()
 
     ipcMain.on('print-label', async (e, data) => {
       printWindow.webContents.send('print-label', data)
 
-      await new Promise((resolve) => setTimeout(() => resolve(true), 500))
+      await new Promise((resolve) => setTimeout(() => resolve(true), store.get('timeout')))
 
-      printWindow.webContents.print({ silent: true, deviceName: 'TSC TE210' }, (success, fail) => {
-        console.log(success, fail)
-      })
+      printWindow.webContents.print(
+        { silent: store.get('silent'), deviceName: store.get('deviceName') },
+        (success, fail) => {
+          console.log(success, fail)
+        }
+      )
     })
   })
 
@@ -91,6 +108,10 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+ipcMain.handle('_set', (e, { key, value }) => store.set(key, value))
+ipcMain.handle('_get', (e, key) => store.get(key))
+ipcMain.handle('_delete', (e, key) => store.delete(key))
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
