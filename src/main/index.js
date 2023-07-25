@@ -9,7 +9,7 @@ const store = new Store({
   cwd: app.getPath('userData'),
   defaults: {
     deviceName: 'TSC TE210',
-    apiUrl: 'http://192.168.2.251:6066',
+    apiUrl: 'http://192.168.2.251:6006',
     timeout: 500,
     silent: true
   }
