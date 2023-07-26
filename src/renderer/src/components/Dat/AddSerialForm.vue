@@ -1,7 +1,6 @@
 <script setup>
 import Decimal from 'decimal.js'
-import { watchEffect } from 'vue'
-import { toRefs, computed, ref } from 'vue'
+import { toRefs, computed, ref, watch } from 'vue'
 import { vMaska } from 'maska'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 
@@ -71,9 +70,19 @@ const handleSubmit = () => {
   }
 }
 
-watchEffect(() => {
-  amount.value = remaningAmount.value
-})
+watch(
+  serial,
+  (val) => {
+    if (new Decimal(remaningAmount.value).greaterThan(val.amount)) {
+      amount.value = val.amount
+      console.log('büyük')
+    } else {
+      amount.value = remaningAmount.value
+      console.log('Büyük değil')
+    }
+  },
+  { deep: true, immediate: true }
+)
 </script>
 
 <template>

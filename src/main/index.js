@@ -1,7 +1,8 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import fs from 'fs'
 import Store from 'electron-store'
 
 const store = new Store({
@@ -11,11 +12,15 @@ const store = new Store({
     deviceName: 'TSC TE210',
     apiUrl: 'http://192.168.2.251:6006',
     timeout: 500,
-    silent: true
+    silent: false
   }
 })
 
-console.log(app.getPath('exe'))
+const goTheLock = app.requestSingleInstanceLock()
+
+if (!goTheLock) {
+  app.quit()
+}
 
 function createWindow() {
   // Create the browser window.
@@ -48,15 +53,24 @@ function createWindow() {
     mainWindow.maximize()
 
     ipcMain.on('print-label', async (e, data) => {
+      const slipsDirr = path.join(app.getPath('desktop'), 'slips')
+
+      if (!fs.existsSync(slipsDirr)) fs.mkdirSync(slipsDirr)
+
       printWindow.webContents.send('print-label', data)
 
       await new Promise((resolve) => setTimeout(() => resolve(true), store.get('timeout')))
 
-      printWindow.webContents.print(
-        { silent: store.get('silent'), deviceName: store.get('deviceName'), printBackground: true },
-        (success, fail) => {
-          console.log(success, fail)
-        }
+      printWindow.webContents.print({
+        silent: store.get('silent'),
+        deviceName: store.get('deviceName'),
+        printBackground: true
+      })
+
+      const labelPDF = await printWindow.webContents.printToPDF({ printBackground: true })
+      fs.writeFileSync(
+        path.join(slipsDirr, `${new Date().toLocaleDateString()}_${data.barrelId}.pdf`),
+        labelPDF
       )
     })
   })
@@ -75,6 +89,7 @@ function createWindow() {
     printWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '#print')
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    printWindow.loadFile(join(__dirname, '../renderer/index.html'), { hash: 'print' })
   }
 }
 

@@ -28,7 +28,7 @@ const getQuestions = () => {
 const nextQuestion = (isClear) => {
   const answer = {
     staffId: employee.staffId,
-    machineId: 0,
+    machineId: 64,
     isClear: isClear ? 1 : 0,
     questionId: questions.value[state.current].id
   }
