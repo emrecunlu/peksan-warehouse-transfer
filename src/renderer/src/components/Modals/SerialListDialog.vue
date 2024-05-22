@@ -45,6 +45,7 @@ const selected = ref(null)
             <tr>
               <th>#</th>
               <th>Seri Numarası</th>
+              <th>Renk</th>
               <th>Lot No</th>
               <th>Miktar</th>
             </tr>
@@ -61,6 +62,7 @@ const selected = ref(null)
             >
               <td>{{ item.id }}</td>
               <td>{{ item.serialNo }}</td>
+              <td>{{ item.color }}</td>
               <td>{{ item.lotNo }}</td>
               <td>{{ item.amount }}</td>
             </tr>
